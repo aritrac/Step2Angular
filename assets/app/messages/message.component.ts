@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
-import { Message } from "./messages/message.model";
+import { Message } from "./message.model";
 
 @Component({
-    selector: 'my-app',
-    templateUrl: './app.component.html',
+    selector: 'app-message'
+    templateUrl: './message.component.html',
     styles: [`
         .author {
             display: inline-block;
@@ -20,6 +20,7 @@ import { Message } from "./messages/message.model";
         }
     `]
 })
-export class AppComponent {
-    message: Message = new Message('Some message', 'Aritra');
+
+export class MessageComponent {
+    @Input() message: Message;
 }
