@@ -22,7 +22,16 @@ export class MessageService {
     }
     
     getMessages(){
-        return this.messages;
+        return this.http.get('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message')
+        .map((response: Response) => {
+            const messages = response.json().obj;
+            let transformedMessages: Message[] = [];
+            for(let message of messages){
+                transformedMessages.push(new Message(message.content, 'Aritra', message.id, null));
+            }
+            this.messages = transformedMessages;
+            return transformedMessages;
+        }).catch((error: response) => Observable.throw(error.json()));
     }
     
     deleteMessage(message: Message){
