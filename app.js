@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var appRoutes = require('./routes/app');
+var messageRoutes = require('./routes/messages');
 
 var app = express();
 mongoose.connect("mongodb://localhost:27017/node-angular2");
@@ -15,6 +16,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(){
     console.log("Connection successful!");
+    console.log(process.env.PORT + " " + process.env.IP);
 });
 
 // view engine setup
@@ -33,9 +35,11 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
+    res.setHeader('Content-Security-Policy', 'upgrade-insecure-requests');
     next();
 });
 
+app.use('/message', messageRoutes);
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler
