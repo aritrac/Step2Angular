@@ -13,13 +13,17 @@ export class MessageService {
     constructor(private http: Http){}
     
     addMessage(message: Message){
-        this.messages.push(message);
         const body = JSON.stringify(message);
         const headers = new Headers({
             'Content-Type': 'application/json'
         });
-        return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message', body, {headers: headers}).map((response: Response) => response.json())
-        .catch((error: response) => Observable.throw(error.json()));
+        return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message', body, {headers: headers}).map((response: Response) => {
+                                                                                                                                                const result = response.json();
+                                                                                                                                                const message = new Message(result.obj.content, 'dummy', result.obj._id, null);
+                                                                                                                                                this.messages.push(message);
+                                                                                                                                                return message;
+            
+        }).catch((error: response) => Observable.throw(error.json()));
     }
     
     getMessages(){
@@ -28,7 +32,7 @@ export class MessageService {
             const messages = response.json().obj;
             let transformedMessages: Message[] = [];
             for(let message of messages){
-                transformedMessages.push(new Message(message.content, 'Aritra', message.id, null));
+                transformedMessages.push(new Message(message.content, 'Aritra', message._id, null));
             }
             this.messages = transformedMessages;
             return transformedMessages;
@@ -40,7 +44,12 @@ export class MessageService {
     }
     
     updateMessage(message){
-        
+        const body = JSON.stringify(message);
+        const headers = new Headers({
+            'Content-Type': 'application/json'
+        });
+        return this.http.patch('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message/' + message.messageId, body, {headers: headers}).map((response: Response) => response.json())
+        .catch((error: response) => Observable.throw(error.json()));
     }
     
     deleteMessage(message: Message){
