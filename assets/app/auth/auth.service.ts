@@ -16,4 +16,12 @@ export class AuthService {
                 .map((response: Response) => response.json())
                 .catch((error: response) => Observable.throw(error.json()));
     }
+    
+    signin(user: User) {
+        const body = JSON.stringify(user);
+        const headers = new Headers({'Content-Type':'application/json'});
+        return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/user/signin', body, {headers: headers})
+                .map((response: Response) => response.json())
+                .catch((error: response) => Observable.throw(error.json()));
+    }
 }
