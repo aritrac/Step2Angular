@@ -17,7 +17,8 @@ export class MessageService {
         const headers = new Headers({
             'Content-Type': 'application/json'
         });
-        return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message', body, {headers: headers}).map((response: Response) => {
+        const token = localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
+        return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message' + token, body, {headers: headers}).map((response: Response) => {
                                                                                                                                                 const result = response.json();
                                                                                                                                                 const message = new Message(result.obj.content, 'dummy', result.obj._id, null);
                                                                                                                                                 this.messages.push(message);
@@ -48,13 +49,15 @@ export class MessageService {
         const headers = new Headers({
             'Content-Type': 'application/json'
         });
-        return this.http.patch('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message/' + message.messageId, body, {headers: headers}).map((response: Response) => response.json())
+        const token = localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
+        return this.http.patch('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message/' + message.messageId + token, body, {headers: headers}).map((response: Response) => response.json())
         .catch((error: response) => Observable.throw(error.json()));
     }
     
     deleteMessage(message: Message){
         this.messages.splice(this.messages.indexOf(message), 1);
-        return this.http.delete('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message/' + message.messageId).map((response: Response) => response.json())
+        const token = localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
+        return this.http.delete('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message/' + message.messageId + token).map((response: Response) => response.json())
         .catch((error: response) => Observable.throw(error.json()));
     }
 }
