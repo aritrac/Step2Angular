@@ -20,7 +20,11 @@ export class MessageService {
         const token = localStorage.getItem('token') ? '?token=' + localStorage.getItem('token') : '';
         return this.http.post('https://7cd2586a91f844f1abe82ad17bba0146.vfs.cloud9.us-east-2.amazonaws.com/message' + token, body, {headers: headers}).map((response: Response) => {
                                                                                                                                                 const result = response.json();
-                                                                                                                                                const message = new Message(result.obj.content, 'dummy', result.obj._id, null);
+                                                                                                                                                const message = new Message(
+                                                                                                                                                    result.obj.content, 
+                                                                                                                                                    result.obj.user.firstName, 
+                                                                                                                                                    result.obj._id, 
+                                                                                                                                                    result.obj.user._id);
                                                                                                                                                 this.messages.push(message);
                                                                                                                                                 return message;
             
@@ -33,7 +37,10 @@ export class MessageService {
             const messages = response.json().obj;
             let transformedMessages: Message[] = [];
             for(let message of messages){
-                transformedMessages.push(new Message(message.content, 'Aritra', message._id, null));
+                transformedMessages.push(new Message(message.content, 
+                                                     message.user.firstName, 
+                                                     message._id, 
+                                                     message.user._id));
             }
             this.messages = transformedMessages;
             return transformedMessages;
